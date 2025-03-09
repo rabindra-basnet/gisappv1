@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-04 10:36:11.338768",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "indicators_section",
+  "indicators",
+  "column_break_uluq",
+  "dimension",
+  "column_break_kdrk",
+  "group"
+ ],
+ "fields": [
+  {
+   "fieldname": "indicators",
+   "fieldtype": "Data",
+   "label": "Indicators"
+  },
+  {
+   "fieldname": "dimension",
+   "fieldtype": "Select",
+   "label": "Dimension"
+  },
+  {
+   "fieldname": "group",
+   "fieldtype": "Data",
+   "label": "Group"
+  },
+  {
+   "fieldname": "column_break_uluq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_kdrk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "indicators_section",
+   "fieldtype": "Section Break",
+   "label": "indicators"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-09 12:22:17.913240",
+ "modified_by": "Administrator",
+ "module": "Gisappv1",
+ "name": "Indicators",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

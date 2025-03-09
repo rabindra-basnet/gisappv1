@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-04 10:44:30.406348",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "indicator",
+  "dimension",
+  "column_break_tdsp",
+  "variable1",
+  "column_break_gzkc",
+  "variable2"
+ ],
+ "fields": [
+  {
+   "fieldname": "indicator",
+   "fieldtype": "Data",
+   "label": "Indicator"
+  },
+  {
+   "fieldname": "column_break_tdsp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "variable1",
+   "fieldtype": "Int",
+   "label": "Variable1"
+  },
+  {
+   "fieldname": "column_break_gzkc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "variable2",
+   "fieldtype": "Int",
+   "label": "Variable2"
+  },
+  {
+   "fieldname": "dimension",
+   "fieldtype": "Data",
+   "label": "Dimension"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-04 18:12:28.626447",
+ "modified_by": "Administrator",
+ "module": "Gisappv1",
+ "name": "Data Entry Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

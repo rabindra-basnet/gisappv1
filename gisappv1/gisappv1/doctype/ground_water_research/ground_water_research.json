@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{####}",
+ "creation": "2025-03-03 16:15:15.014394",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "configure_tab",
+  "amended_from",
+  "section_break_rjsq",
+  "name_of_survey",
+  "dimensions_section",
+  "table_pxga",
+  "groups_section",
+  "table_btfo",
+  "section_break_bpfc",
+  "table_tqjp",
+  "reports_tab",
+  "table_muiy"
+ ],
+ "fields": [
+  {
+   "fieldname": "configure_tab",
+   "fieldtype": "Tab Break",
+   "label": "Configure"
+  },
+  {
+   "fieldname": "dimensions_section",
+   "fieldtype": "Section Break",
+   "label": "Dimensions"
+  },
+  {
+   "fieldname": "groups_section",
+   "fieldtype": "Section Break",
+   "label": "Groups"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Ground Water Research",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "reports_tab",
+   "fieldtype": "Tab Break",
+   "label": "Reports"
+  },
+  {
+   "fieldname": "table_btfo",
+   "fieldtype": "Table",
+   "options": "Groups"
+  },
+  {
+   "fieldname": "section_break_bpfc",
+   "fieldtype": "Section Break",
+   "label": "Indicators"
+  },
+  {
+   "fieldname": "table_tqjp",
+   "fieldtype": "Table",
+   "options": "Indicators"
+  },
+  {
+   "fieldname": "table_muiy",
+   "fieldtype": "Table",
+   "options": "Dimensions"
+  },
+  {
+   "fieldname": "section_break_rjsq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "name_of_survey",
+   "fieldtype": "Data",
+   "label": "Name of Survey"
+  },
+  {
+   "fieldname": "table_pxga",
+   "fieldtype": "Table",
+   "options": "Dimensions"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-03-04 17:29:51.662708",
+ "modified_by": "Administrator",
+ "module": "Gisappv1",
+ "name": "Ground Water Research",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

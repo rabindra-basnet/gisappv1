@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:project_title",
+ "creation": "2025-03-04 17:31:18.619227",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "project_description_section",
+  "project_title",
+  "dimension_list_section",
+  "table_gohs",
+  "indicator_list_section",
+  "table_zuog"
+ ],
+ "fields": [
+  {
+   "fieldname": "table_gohs",
+   "fieldtype": "Table",
+   "options": "Dimensions"
+  },
+  {
+   "fieldname": "dimension_list_section",
+   "fieldtype": "Section Break",
+   "label": "Dimension List"
+  },
+  {
+   "fieldname": "indicator_list_section",
+   "fieldtype": "Section Break",
+   "label": "Indicator List"
+  },
+  {
+   "fieldname": "table_zuog",
+   "fieldtype": "Table",
+   "options": "Indicators"
+  },
+  {
+   "fieldname": "project_description_section",
+   "fieldtype": "Section Break",
+   "label": "Project Description"
+  },
+  {
+   "fieldname": "project_title",
+   "fieldtype": "Data",
+   "label": "Project Title",
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-04 17:38:16.494903",
+ "modified_by": "Administrator",
+ "module": "Gisappv1",
+ "name": "Research Template",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

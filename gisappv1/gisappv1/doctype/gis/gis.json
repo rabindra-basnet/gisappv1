@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-03-03 16:03:49.767432",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "hello"
+ ],
+ "fields": [
+  {
+   "fieldname": "hello",
+   "fieldtype": "Data",
+   "label": "Hello"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-03-03 16:04:08.637125",
+ "modified_by": "Administrator",
+ "module": "Gisappv1",
+ "name": "GIS",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
