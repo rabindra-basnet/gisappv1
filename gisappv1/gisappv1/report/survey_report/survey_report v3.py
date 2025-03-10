@@ -228,8 +228,29 @@ def execute(filters=None):
     if filter_gi == "GWGI":
         chart = create_gwgi_chart(filters,indicators_list, data[-2])
     else:
-        # chart = create_chart(filters, indicators_list, chart_data)
         chart = create_chart(filters, indicators_list, chart_data)
+
+    demo_chart = {
+        'data': {
+            'labels': ['Technical research', 'Tech Reports', 'Legal issues', 'Government', 'Policy', 'Operation', 'Average of All Indicators'],
+            'datasets': [{
+                'name': 'Variable 1',
+                'values': [8.5, 6.0, 7.0, 7.0, 16.5, 20.5,0]
+            }, {
+                'name': 'Variable 2',
+                'values': [0.5, 11.0, 9.0, 21.5, 20.0, 31.0,0]
+            }, {
+                'name': 'Average of Variables',
+                'values': [4.5, 8.5, 8.0, 14.25, 18.25, 25.75,0]
+            }, {
+                'name': 'Average of All Indicators',
+                'values': [0, 0, 0, 0, 0, 0, 13.208333333333334]
+            }]
+        },
+        'type': 'bar',
+        'title': 'Average of Variables',
+        'colors': ['#7cd6fd', '#743ee2', '#ffa3ef', '#ffcc00']
+    }
         
     return columns, data, None, chart
 
@@ -398,81 +419,3 @@ def create_gwgi_chart(filters, indicators_list, chart_data):
     }
     
     return chart 
-
-
-# def create_radar_chart(filters, indicators_list, chart_data):
-#     # Safely get the dimension filter value
-#     filter_dimension = None
-#     if filters and isinstance(filters, dict):
-#         filter_dimension = filters.get("dimension")
-
-#     # Extracting the relevant values from the provided data
-#     labels = [item["indicator"] for item in indicators_list]
-
-#     # Extract data for datasets
-#     variable1_values = []
-#     variable2_values = []
-#     average_values = []
-#     overall_average_values = []
-    
-#     for field in indicators_list:
-#         # Extracting values from the first object (chart_data[0])
-#         value1 = chart_data[0].get(f'variable1{to_camel_case(field["indicator"])}', 0)
-#         value2 = chart_data[0].get(f'variable2{to_camel_case(field["indicator"])}', 0)
-        
-#         # Extracting average values from the second object (chart_data[1])
-#         avg_value = chart_data[1].get(f'variable1{to_camel_case(field["indicator"])}', 0)
-
-#         # Append values to respective lists
-#         variable1_values.append(value1)
-#         variable2_values.append(value2)
-#         average_values.append(avg_value)
-
-#     # Calculate overall average from the third object (chart_data[2])
-#     for field in indicators_list:
-#         overall_avg_value = chart_data[2].get(f'variable1{to_camel_case(field["indicator"])}', 0)
-#         overall_average_values.append(overall_avg_value)
-
-#     # Create datasets in a simplified format - let the JavaScript handle the styling
-#     datasets = [
-#         {
-#             "label": "Variable 1",
-#             "data": variable1_values,
-#             "colorIndex": 0
-#         },
-#         {
-#             "label": "Variable 2",
-#             "data": variable2_values,
-#             "colorIndex": 1
-#         },
-#         {
-#             "label": "Average of Variables",
-#             "data": average_values,
-#             "colorIndex": 2
-#         },
-#         {
-#             "label": "Overall Average",
-#             "data": overall_average_values,
-#             "colorIndex": 3
-#         }
-#     ]
-
-#     # Find the max value for scale configuration
-#     all_values = variable1_values + variable2_values + average_values + overall_average_values
-#     max_value = max(all_values) if all_values else 10
-    
-#     # Round up to nearest 5 without using math module
-#     rounded_max = ((max_value + 4) // 5) * 5  # Round up to nearest 5
-    
-#     # Creating the chart structure with specific Chart.js radar chart configuration
-#     chart = {
-#         "data": {
-#             "labels": labels,  # Categories for the radar chart
-#             "datasets": datasets,  # All datasets for the chart
-#             "maxValue": rounded_max,  # For scale settings
-#             "stepSize": rounded_max / 10,  # Suggested step size
-#             "title": "Indicator Comparison"  # Title of the chart
-#         }
-#     }
-
-#     return chart
