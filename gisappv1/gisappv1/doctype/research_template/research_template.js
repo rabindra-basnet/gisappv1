@@ -5,6 +5,28 @@ frappe.ui.form.on("Research Template", {
   refresh(frm) {
     update_dimension_options_from_user_input(frm);
   },
+  
+  total_weightage_per(frm){
+    let dimension_table = frm.doc.table_gohs;
+    let last_row = dimension_table[dimension_table.length-1]
+    console.log(last_row)
+
+    //Calculate the sum of weightage from the dimension table
+    sum_of_weightage = dimension_table.reduce((sum, row)=>(sum + (Number(row.weightage) || 0)),0)
+
+    if(sum_of_weightage != 100){
+      frappe.msgprint("The sum of weightage should be 100. Adjust the weightage in Dimension Table");
+      // Clear only the weightage field of the last row
+      last_row.weightage = null;
+
+      // Refresh field to reflect changes
+      frm.refresh_field("table_gohs");
+    }
+  },
+
+  validate(frm) {
+    frm.events.total_weightage_per(frm);
+  },
 });
 
 frappe.ui.form.on("Dimensions", {

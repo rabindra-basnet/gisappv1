@@ -1,7 +1,165 @@
-# Copyright (c) 2025, Ashish and contributors
-# For license information, please see license.txt
-
+# Add this new method to your Python file to handle direct PDF download
 import frappe
+@frappe.whitelist()
+def get_pdf_file(file_name):
+    """
+    Get the PDF file for direct download
+    
+    Args:
+        file_name (str): Name of the file document
+        
+    Returns:
+        Response: File download response
+    """
+    from frappe.utils.response import download_file
+    from frappe.utils.file_manager import get_file
+    
+    file_path = frappe.get_doc("File", file_name)
+    file_content = get_file(file_name)
+    
+    return download_file(
+        file_content[1],
+        file_path.file_name
+    )
+
+# Update the export_to_pdf function to fix the table scrolling issue
+@frappe.whitelist()
+def export_to_pdf(filters, report_name, chart_image=None, html_data=None):
+    """
+    Export the Survey Report to PDF
+    
+    Args:
+        filters (dict): Filter values for the report
+        report_name (str): Name for the PDF report
+        chart_image (str): Base64 encoded image of the chart
+        html_data (str): HTML of the report data table
+        
+    Returns:
+        str: Name of the generated PDF file
+    """
+    import base64
+    from datetime import datetime
+    from frappe.utils.pdf import get_pdf
+    from frappe.utils import get_site_path, get_files_path
+    
+    # Convert filters from string to dict if needed
+    if isinstance(filters, str):
+        import json
+        filters = json.loads(filters)
+    
+    # Re-run the report to get the data
+    columns, data = execute(filters)[:2]
+    
+    # Generate HTML for the PDF
+    html_content = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>{0}</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 0; padding: 0; }}
+            .report-header {{ text-align: center; margin-bottom: 20px; }}
+            .report-title {{ font-size: 18px; font-weight: bold; }}
+            .report-date {{ font-size: 12px; color: #666; }}
+            .chart-container {{ text-align: center; margin: 20px 0; }}
+            .chart-container img {{ max-width: 100%; height: auto; }}
+            .table-container {{ overflow: visible; width: 100%; }}
+            table {{ width: 100%; border-collapse: collapse; margin-top: 20px; page-break-inside: auto; }}
+            thead {{ display: table-header-group; }}
+            tr {{ page-break-inside: avoid; page-break-after: auto; }}
+            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px; }}
+            th {{ background-color: #f2f2f2; font-weight: bold; }}
+            tr:nth-child(even) {{ background-color: #f9f9f9; }}
+            @page {{ size: landscape; margin: 1cm; }}
+        </style>
+    </head>
+    <body>
+        <div class="report-header">
+            <div class="report-title">{0}</div>
+            <div class="report-date">Generated on: {1}</div>
+        </div>
+    """.format(report_name, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    
+    # Add chart image if provided
+    if chart_image:
+        # Remove the data:image/png;base64, prefix if present
+        if "base64," in chart_image:
+            chart_image = chart_image.split("base64,")[1]
+        
+        html_content += """
+        <div class="chart-container">
+            <h3>Radar Chart Visualization</h3>
+            <img src="data:image/png;base64,{0}" alt="Survey Chart">
+        </div>
+        """.format(chart_image)
+    
+    # Generate table with scrollable container
+    html_content += '<h3>Detailed Data</h3><div class="table-container"><table><thead><tr>'
+    
+    # Add table headers - only include essential columns to fit in PDF
+    visible_columns = []
+    for col in columns:
+        # Skip columns that start with 'parent' to reduce table width
+        if not col.get("fieldname", "").startswith("parent"):
+            visible_columns.append(col)
+            html_content += "<th>{0}</th>".format(col.get("label", ""))
+    
+    html_content += "</tr></thead><tbody>"
+    
+    # Add table rows
+    for row in data:
+        html_content += "<tr>"
+        for col in visible_columns:
+            field_name = col.get("fieldname", "")
+            cell_value = row.get(field_name, "")
+            
+            # Format float values
+            if isinstance(cell_value, float):
+                cell_value = "{:.2f}".format(cell_value)
+            
+            html_content += "<td>{0}</td>".format(cell_value)
+        html_content += "</tr>"
+    
+    html_content += "</tbody></table></div>"
+    
+    # Close HTML
+    html_content += """
+    </body>
+    </html>
+    """
+    
+    # Generate PDF with landscape orientation and adjusted margins
+    pdf_options = {
+        "orientation": "Landscape",
+        "page-size": "A4",
+        "margin-top": "10mm",
+        "margin-right": "10mm",
+        "margin-bottom": "10mm",
+        "margin-left": "10mm",
+        "print-media-type": True,
+        "dpi": 300
+    }
+    
+    pdf_data = get_pdf(html_content, options=pdf_options)
+    
+    # Save PDF to a file
+    file_name = "{0}_{1}.pdf".format(
+        report_name.replace(" ", "_").lower(),
+        datetime.now().strftime("%Y%m%d_%H%M%S")
+    )
+    
+    # Create a File record
+    file_doc = frappe.get_doc({
+        "doctype": "File",
+        "file_name": file_name,
+        "content": pdf_data,
+        "is_private": 1,
+    })
+    file_doc.insert(ignore_permissions=True)
+    
+    return file_doc.name
+
 
 def to_camel_case(snake_str):
     """Convert snake_case or space-separated string to camelCase."""
@@ -228,8 +386,8 @@ def execute(filters=None):
     if filter_gi == "GWGI":
         chart = create_gwgi_chart(filters,indicators_list, data[-2])
     else:
-        # chart = create_chart(filters, indicators_list, chart_data)
         chart = create_chart(filters, indicators_list, chart_data)
+        # chart = create_radar_chart(filters, indicators_list, chart_data)
         
     return columns, data, None, chart
 
@@ -398,81 +556,3 @@ def create_gwgi_chart(filters, indicators_list, chart_data):
     }
     
     return chart 
-
-
-# def create_radar_chart(filters, indicators_list, chart_data):
-#     # Safely get the dimension filter value
-#     filter_dimension = None
-#     if filters and isinstance(filters, dict):
-#         filter_dimension = filters.get("dimension")
-
-#     # Extracting the relevant values from the provided data
-#     labels = [item["indicator"] for item in indicators_list]
-
-#     # Extract data for datasets
-#     variable1_values = []
-#     variable2_values = []
-#     average_values = []
-#     overall_average_values = []
-    
-#     for field in indicators_list:
-#         # Extracting values from the first object (chart_data[0])
-#         value1 = chart_data[0].get(f'variable1{to_camel_case(field["indicator"])}', 0)
-#         value2 = chart_data[0].get(f'variable2{to_camel_case(field["indicator"])}', 0)
-        
-#         # Extracting average values from the second object (chart_data[1])
-#         avg_value = chart_data[1].get(f'variable1{to_camel_case(field["indicator"])}', 0)
-
-#         # Append values to respective lists
-#         variable1_values.append(value1)
-#         variable2_values.append(value2)
-#         average_values.append(avg_value)
-
-#     # Calculate overall average from the third object (chart_data[2])
-#     for field in indicators_list:
-#         overall_avg_value = chart_data[2].get(f'variable1{to_camel_case(field["indicator"])}', 0)
-#         overall_average_values.append(overall_avg_value)
-
-#     # Create datasets in a simplified format - let the JavaScript handle the styling
-#     datasets = [
-#         {
-#             "label": "Variable 1",
-#             "data": variable1_values,
-#             "colorIndex": 0
-#         },
-#         {
-#             "label": "Variable 2",
-#             "data": variable2_values,
-#             "colorIndex": 1
-#         },
-#         {
-#             "label": "Average of Variables",
-#             "data": average_values,
-#             "colorIndex": 2
-#         },
-#         {
-#             "label": "Overall Average",
-#             "data": overall_average_values,
-#             "colorIndex": 3
-#         }
-#     ]
-
-#     # Find the max value for scale configuration
-#     all_values = variable1_values + variable2_values + average_values + overall_average_values
-#     max_value = max(all_values) if all_values else 10
-    
-#     # Round up to nearest 5 without using math module
-#     rounded_max = ((max_value + 4) // 5) * 5  # Round up to nearest 5
-    
-#     # Creating the chart structure with specific Chart.js radar chart configuration
-#     chart = {
-#         "data": {
-#             "labels": labels,  # Categories for the radar chart
-#             "datasets": datasets,  # All datasets for the chart
-#             "maxValue": rounded_max,  # For scale settings
-#             "stepSize": rounded_max / 10,  # Suggested step size
-#             "title": "Indicator Comparison"  # Title of the chart
-#         }
-#     }
-
-#     return chart

@@ -17,6 +17,7 @@
   {
    "fieldname": "table_gohs",
    "fieldtype": "Table",
+   "label": "Dimension Table",
    "options": "Dimensions"
   },
   {
@@ -48,7 +49,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-04 17:38:16.494903",
+ "modified": "2025-03-11 12:32:24.245895",
  "modified_by": "Administrator",
  "module": "Gisappv1",
  "name": "Research Template",

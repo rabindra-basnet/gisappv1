@@ -38,3 +38,33 @@ frappe.ui.form.on('Research Survey', {
         }
     }
 });
+
+frappe.ui.form.on('Data Entry Table', {
+    refresh(frm) {
+        // your code here
+    },
+
+    variable1: function(frm, cdt, cdn){
+        let row = locals[cdt][cdn];
+        console.log(row);
+
+        let variable1 = row.variable1;
+
+        if(variable1 > 3 || variable1 < 0){
+            frappe.msgprint("The value of the variables can on be between 1 and 3.")
+            row.variable1 = null;
+        }
+    },
+
+    variable2: function(frm, cdt, cdn){
+        let row = locals[cdt][cdn];
+        console.log(row);
+
+        let variable2 = row.variable2;
+
+        if(variable2 > 3 || variable2 < 0){
+            frappe.msgprint("The value of the variables can on be between 1 and 3.")
+            row.variable2 = null;
+        }
+    }
+});

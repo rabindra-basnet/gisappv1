@@ -54,13 +54,14 @@
    "fieldname": "weightage",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Weightage (%)"
+   "label": "Weightage (%)",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-09 17:41:38.387666",
+ "modified": "2025-03-11 12:26:31.782701",
  "modified_by": "Administrator",
  "module": "Gisappv1",
  "name": "Dimensions",

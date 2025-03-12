@@ -396,7 +396,7 @@ frappe.query_reports["Survey Report"] = {
                         $("#chartLoadingMessage").hide();
                     }, 100);
                 });
-
+                
                 // Listen for report refresh events
                 report.page.wrapper.on('refresh', function() {
                     console.log("Report refresh event detected");
@@ -416,77 +416,6 @@ frappe.query_reports["Survey Report"] = {
                         self.renderChart(report.data);
                     }
                 }, 500);
-
-
-
-                // Add PDF export button
-                // In the frappe.query_reports["Survey Report"] object, update the PDF export button code:
-
-                // Find this section in the JavaScript file (around line 540-570)
-                report.page.add_inner_button("Export to PDF", function() {
-                    console.log("PDF export requested");
-
-                    // Show loading message
-                    frappe.show_alert({
-                        message: __("Preparing PDF export..."),
-                        indicator: 'blue'
-                    });
-                    
-                    // Get current filter values for the report name
-                    const projectTitle = frappe.query_report.get_filter_value('project_title');
-                    const dimension = frappe.query_report.get_filter_value('dimension');
-                    const gwgi = frappe.query_report.get_filter_value('gwgi');
-
-                    let reportTitle = "Survey Report";
-                    if (projectTitle) {
-                        reportTitle += " - " + projectTitle;
-                        if (dimension && dimension !== "All Indicators") {
-                            reportTitle += " (" + dimension + ")";
-                        }
-                        if (gwgi && gwgi !== "No Filter") {
-                            reportTitle += " " + gwgi;
-                        }
-                    }
-
-                    // Capture the current chart as an image
-                    const canvas = document.getElementById("radarChart");
-                    let chartImage = null;
-                    if (canvas) {
-                        // Convert canvas to base64 image
-                        chartImage = canvas.toDataURL("image/png");
-                    }
-
-                    // Generate PDF with the report data
-                    frappe.call({
-                        method: "gisappv1.gisappv1.report.survey_report.survey_report.export_to_pdf",
-                        args: {
-                            filters: frappe.query_report.get_filter_values(),
-                            report_name: reportTitle,
-                            chart_image: chartImage
-                        },
-                        callback: function(r) {
-                            if (r.message) {
-                                // Replace the window.open with a direct download approach
-                                var a = document.createElement('a');
-                                a.href = frappe.urllib.get_full_url("/api/method/gisappv1.gisappv1.report.survey_report.survey_report.get_pdf_file?file_name=" + r.message);
-                                // a.href = "/api/method/gisappv1.gisappv1.report.survey_report.survey_report.get_pdf_file?file_name=" + encodeURIComponent(r.message);
-                                a.download = reportTitle + '.pdf';
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                                
-                                frappe.show_alert({
-                                    message: __("PDF downloaded successfully"),
-                                    indicator: 'green'
-                                });
-                            } else {
-                                frappe.throw(__("PDF export failed"));
-                            }
-                        }
-                    });
-
-                });
-
                 
             }, function(error) {
                 console.error("Failed to load Chart.js:", error);
@@ -496,69 +425,72 @@ frappe.query_reports["Survey Report"] = {
     }
 };
 
-// For radar charts specifically
-// function captureChartAndExportPDF(report) {
-//     try {
-//         // Get the current filters
-//         const filters = report.get_values();
-        
-//         // Find the radar chart SVG element
-//         const radarChartSVG = document.querySelector('.radar-chart svg, .frappe-chart svg');
-        
-//         if (radarChartSVG) {
-//             // Set background for the SVG to ensure it shows up in the image
-//             const originalBackground = radarChartSVG.style.background;
-//             radarChartSVG.style.background = 'white';
-            
-//             // Use svg-to-png conversion
-//             const svgData = new XMLSerializer().serializeToString(radarChartSVG);
-//             const canvas = document.createElement('canvas');
-//             const ctx = canvas.getContext('2d');
-            
-//             // Create an image to draw to canvas
-//             const img = new Image();
-//             const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-//             const url = URL.createObjectURL(svgBlob);
-            
-//             img.onload = function() {
-//                 // Set canvas dimensions
-//                 canvas.width = img.width;
-//                 canvas.height = img.height;
-                
-//                 // Draw image to canvas
-//                 ctx.drawImage(img, 0, 0);
-//                 URL.revokeObjectURL(url);
-                
-//                 // Get data URL
-//                 const chartImage = canvas.toDataURL('image/png');
-                
-//                 // Reset SVG background
-//                 radarChartSVG.style.background = originalBackground;
-                
-//                 // Call export function
-//                 exportToPDF(filters, chartImage);
-//             };
-            
-//             img.src = url;
-//         } else {
-//             // No chart found, just export the table data
-//             frappe.show_alert({
-//                 message: __('No chart found, exporting only table data'),
-//                 indicator: 'blue'
-//             }, 3);
-            
-//             exportToPDF(filters, null);
-//         }
-//     } catch (e) {
-//         console.error('Chart capture error:', e);
-//         frappe.msgprint({
-//             title: __('Error Capturing Chart'),
-//             message: __('There was an error capturing the chart for PDF. Error: ' + e.message),
-//             indicator: 'red'
-//         });
-        
-//         // Try to export just the table data if chart capture fails
-//         exportToPDF(report.get_values(), null);
-//     }
-// }
 
+// Add this to your onload function in the Survey Report JS file
+// After the "Refresh Chart" button is added
+
+report.page.add_inner_button("Export to PDF", function() {
+    console.log("PDF export requested");
+    
+    // Show loading message
+    frappe.show_alert({
+        message: __("Preparing PDF export..."),
+        indicator: 'blue'
+    });
+    
+    // Get current filter values for the report name
+    const projectTitle = frappe.query_report.get_filter_value('project_title');
+    const dimension = frappe.query_report.get_filter_value('dimension');
+    const gwgi = frappe.query_report.get_filter_value('gwgi');
+    
+    let reportTitle = "Survey Report";
+    if (projectTitle) {
+        reportTitle += " - " + projectTitle;
+        if (dimension && dimension !== "All Indicators") {
+            reportTitle += " (" + dimension + ")";
+        }
+        if (gwgi && gwgi !== "No Filter") {
+            reportTitle += " " + gwgi;
+        }
+    }
+    
+    // Capture the current chart as an image
+    const captureChart = function() {
+        return new Promise((resolve) => {
+            const canvas = document.getElementById("radarChart");
+            if (canvas) {
+                // Convert canvas to base64 image
+                const chartImage = canvas.toDataURL("image/png");
+                resolve(chartImage);
+            } else {
+                resolve(null);
+            }
+        });
+    };
+    
+    // Generate PDF with the report data
+    captureChart().then(chartImage => {
+        frappe.call({
+            method: "survey_reports.survey_reports.report.survey_report.survey_report.export_to_pdf",
+            args: {
+                filters: frappe.query_report.get_filter_values(),
+                report_name: reportTitle,
+                chart_image: chartImage,
+                html_data: report.page.main.find('.datatable').html()
+            },
+            callback: function(r) {
+                if (r.message) {
+                    // Open the generated PDF in a new tab
+                    window.open(frappe.urllib.get_full_url("/api/method/frappe.utils.print_format.download_pdf?doctype=File&name=" + r.message), "_blank");
+                    
+                    frappe.show_alert({
+                        message: __("PDF export complete"),
+                        indicator: 'green'
+                    });
+                } else {
+                    frappe.throw(__("PDF export failed"));
+                }
+            }
+        });
+    });
+});
